@@ -1,0 +1,15 @@
+name: EnderPearlTp
+main: com.lazini.EnderSurfer
+version: 0.1
+author: Lazini
+commands:
+    setHearts:
+        usage: /setHearts <half-hearts>
+        description: Sets how many half hearts should be lost when someone hits the ground after throwing an enderpearl. Default is 2.
+        permission: op
+        permission-message: You don't have permission to do this!
+    setVelocityMultiplier:
+        usage: /setVelocityMultiplier <multiplier>
+        description: Set the velocity multiplier (enderpearl's velocity times the number you put here). Default is 3.
+        permission: op
+        permission-message: You don't have permission to do this!
