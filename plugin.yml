@@ -1,6 +1,6 @@
 name: EnderSurfer
 main: com.lazini.EnderSurfer
-version: 0.1
+version: 1.2
 author: Lazini
 commands:
     setHearts:
@@ -11,5 +11,10 @@ commands:
     setVelocityMultiplier:
         usage: /setVelocityMultiplier <multiplier>
         description: Set the velocity multiplier (enderpearl's velocity times the number you put here). Default is 3.
+        permission: op
+        permission-message: You don't have permission to do this!
+    setDamageOnAir:
+        usage: /setDamageOnAir <true;false>
+        description: Set to true if you want the player to lose health everytime they throw an enderpearl while in the air. Default is true.
         permission: op
         permission-message: You don't have permission to do this!
