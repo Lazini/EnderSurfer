@@ -27,6 +27,8 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	String strHealth = Integer.toString(health);
 	int velMult = getConfig().getInt("vel-mult");
 	String strVelMult = Integer.toString(velMult);
+	boolean dmgOnAir = getConfig().getBoolean("dmg-on-air");
+	String strDmgOnAir = Boolean.toString(dmgOnAir);
 
 	ArrayList<UUID> list = new ArrayList<UUID>(100);
 
@@ -88,11 +90,33 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 						+ " (vel-mult: " + strVelMult + ")");
 				return true;
 			}
+		} else if (command.getName().equalsIgnoreCase("setDamageOnAir")) {
+			if (args.length == 0) {
+				sender.sendMessage(ChatColor.GREEN
+						+ "Currently damaging the player while in the air is set to "
+						+ strDmgOnAir);
+				return true;
+			} else if (args.length > 1) {
+				sender.sendMessage(ChatColor.RED
+						+ "Too many arguments, don't you think?");
+				return false;
+			} else {
+				reloadConfig();
+				dmgOnAir = Boolean.parseBoolean(args[0]);
+				getConfig().set("dmg-on-air", dmgOnAir);
+				strDmgOnAir = Boolean.toString(dmgOnAir);
+				saveConfig();
+				sender.sendMessage(ChatColor.GREEN
+						+ " Configuration file updated!" + ChatColor.GOLD
+						+ " (dmg-on-air: " + strDmgOnAir + ")");
+				return true;
+			}
 		}
 
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onThrowEnderPearl(ProjectileLaunchEvent event) {
 		if (!(event.getEntity().getShooter() instanceof Player)
@@ -102,6 +126,10 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		if (shooter.isSneaking() == true)
 			return;
 		Vector velocity = event.getEntity().getVelocity();
+
+		if (!shooter.isOnGround() && dmgOnAir) {
+			shooter.setHealth(shooter.getHealth() - health);
+		}
 
 		velocity = velocity.multiply(velMult);
 		shooter.setVelocity(velocity);
