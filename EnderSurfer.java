@@ -1,6 +1,7 @@
 package com.lazini;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,13 +21,14 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 
 	EnderPearl enderpearl;
 	Player shooter;
+	UUID shooterUUID;
+
 	int health = getConfig().getInt("half-hearts");
 	String strHealth = Integer.toString(health);
-
 	int velMult = getConfig().getInt("vel-mult");
 	String strVelMult = Integer.toString(velMult);
 
-	ArrayList<Player> list = new ArrayList<Player>(100);
+	ArrayList<UUID> list = new ArrayList<UUID>(100);
 
 	@Override
 	public void onEnable() {
@@ -97,12 +99,18 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 				|| !(event.getEntity() instanceof EnderPearl))
 			return;
 		shooter = (Player) event.getEntity().getShooter();
+		if (shooter.isSneaking() == true)
+			return;
 		Vector velocity = event.getEntity().getVelocity();
-		velocity = velocity.multiply(velMult);
 
+		velocity = velocity.multiply(velMult);
 		shooter.setVelocity(velocity);
 		event.getEntity().remove();
-		list.add(shooter);
+		shooterUUID = shooter.getUniqueId();
+
+		if (!(list.contains(shooterUUID))) {
+			list.add(shooterUUID);
+		}
 	}
 
 	@EventHandler
@@ -110,10 +118,9 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		if (!(event.getEntity() instanceof Player)
 				|| event.getEntity() != shooter)
 			return;
-		// && event.getEntity().getEntityId() == shooter.getEntityId()
-		if (event.getCause() == DamageCause.FALL && list.contains(shooter)) {
+		if (event.getCause() == DamageCause.FALL && list.contains(shooterUUID)) {
 			shooter.setHealth(shooter.getHealth() - health);
-			list.remove(shooter);
+			list.remove(shooterUUID);
 			event.setCancelled(true);
 		}
 	}
