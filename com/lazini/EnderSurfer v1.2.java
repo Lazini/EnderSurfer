@@ -3,13 +3,9 @@ package com.lazini;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -23,12 +19,10 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	Player shooter;
 	UUID shooterUUID;
 
+	private static EnderSurfer instance;
 	int health = getConfig().getInt("half-hearts");
-	String strHealth = Integer.toString(health);
 	int velMult = getConfig().getInt("vel-mult");
-	String strVelMult = Integer.toString(velMult);
 	boolean dmgOnAir = getConfig().getBoolean("dmg-on-air");
-	String strDmgOnAir = Boolean.toString(dmgOnAir);
 
 	ArrayList<UUID> list = new ArrayList<UUID>(100);
 
@@ -38,82 +32,10 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-	}
-
-	@Override
-	public void onDisable() {
-		super.onDisable();
-		HandlerList.unregisterAll();
-	}
-
-	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
-		if (command.getName().equalsIgnoreCase("sethearts")) {
-			if (args.length == 0) {
-				sender.sendMessage(ChatColor.GREEN
-						+ strHealth
-						+ " half hearts will be lost when someone hits the ground!");
-				return true;
-			} else if (args.length > 1) {
-				sender.sendMessage(ChatColor.RED
-						+ "Too many arguments, don't you think?");
-				return false;
-			} else {
-				reloadConfig();
-				health = Integer.parseInt(args[0]);
-				getConfig().set("half-hearts", health);
-				strHealth = Integer.toString(health);
-				saveConfig();
-				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
-						+ " (half-hearts: " + strHealth + ")");
-				return true;
-			}
-		} else if (command.getName().equalsIgnoreCase("setVelocityMultiplier")) {
-			if (args.length == 0) {
-				sender.sendMessage(ChatColor.GREEN
-						+ "The current velocity multiplier is " + strVelMult);
-				return true;
-			} else if (args.length > 1) {
-				sender.sendMessage(ChatColor.RED
-						+ "Too many arguments, don't you think?");
-				return false;
-			} else {
-				reloadConfig();
-				velMult = Integer.parseInt(args[0]);
-				getConfig().set("vel-mult", velMult);
-				strVelMult = Integer.toString(velMult);
-				saveConfig();
-				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
-						+ " (vel-mult: " + strVelMult + ")");
-				return true;
-			}
-		} else if (command.getName().equalsIgnoreCase("setDamageOnAir")) {
-			if (args.length == 0) {
-				sender.sendMessage(ChatColor.GREEN
-						+ "Currently damaging the player while in the air is set to "
-						+ strDmgOnAir);
-				return true;
-			} else if (args.length > 1) {
-				sender.sendMessage(ChatColor.RED
-						+ "Too many arguments, don't you think?");
-				return false;
-			} else {
-				reloadConfig();
-				dmgOnAir = Boolean.parseBoolean(args[0]);
-				getConfig().set("dmg-on-air", dmgOnAir);
-				strDmgOnAir = Boolean.toString(dmgOnAir);
-				saveConfig();
-				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
-						+ " (dmg-on-air: " + strDmgOnAir + ")");
-				return true;
-			}
-		}
-
-		return false;
+		instance = this;
+		getCommand("setHearts").setExecutor(new MainCommands());
+		getCommand("setVelocityMultiplier").setExecutor(new MainCommands());
+		getCommand("setDamageOnAir").setExecutor(new MainCommands());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -125,20 +47,21 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		shooter = (Player) event.getEntity().getShooter();
 		if (shooter.isSneaking() == true)
 			return;
+		health = getConfig().getInt("half-hearts");
+		velMult = getConfig().getInt("vel-mult");
+		dmgOnAir = getConfig().getBoolean("dmg-on-air");
 		Vector velocity = event.getEntity().getVelocity();
 
-		if (!shooter.isOnGround() && dmgOnAir) {
+		if (!shooter.isOnGround() && dmgOnAir)
 			shooter.setHealth(shooter.getHealth() - health);
-		}
 
 		velocity = velocity.multiply(velMult);
 		shooter.setVelocity(velocity);
 		event.getEntity().remove();
 		shooterUUID = shooter.getUniqueId();
 
-		if (!(list.contains(shooterUUID))) {
+		if (!(list.contains(shooterUUID)))
 			list.add(shooterUUID);
-		}
 	}
 
 	@EventHandler
@@ -146,10 +69,17 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		if (!(event.getEntity() instanceof Player)
 				|| event.getEntity() != shooter)
 			return;
+		health = getConfig().getInt("half-hearts");
+		dmgOnAir = getConfig().getBoolean("dmg-on-air");
 		if (event.getCause() == DamageCause.FALL && list.contains(shooterUUID)) {
-			shooter.setHealth(shooter.getHealth() - health);
+			if (!dmgOnAir)
+				shooter.setHealth(shooter.getHealth() - health);
 			list.remove(shooterUUID);
 			event.setCancelled(true);
 		}
+	}
+
+	public static EnderSurfer getInstance() {
+		return instance;
 	}
 }
