@@ -12,11 +12,11 @@ Welcome to my first plugin! This plugin features live enderpearl teleportation. 
 * **/setVelocityMultiplier**: Sets the velocity multiplier (enderpearl's velocity times the number you put here). //Insert integers only//
 * **/setDamageOnAir**: If set to true, the player will be damaged by the hearts specified in the **/setHearts** command. //Insert boolean values only//
 
+=== Quick demonstration video ===
+<<youtube pWmvJEdliX4>>
+
 === Credits ===
 * To **aegisjester** for suggesting the plugin name and the //setDamageOnAir// command.
 * To **pogostick29** for his bukkit plugin development tutorials.
 * To **Eegah123** for suggesting the sneaking-cancelling idea.
 * To **mash1928** for making the thumbnail.
-
-====== Source code ======
-URL: https://github.com/Lazini/EnderSurfer.git
