@@ -1,6 +1,6 @@
 name: EnderSurfer
 main: com.lazini.EnderSurfer
-version: 1.3
+version: 1.4
 author: Lazini
 commands:
     setHearts:
