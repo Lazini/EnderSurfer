@@ -1,6 +1,7 @@
 package com.lazini;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.entity.EnderPearl;
@@ -24,7 +25,7 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	int velMult = getConfig().getInt("vel-mult");
 	boolean dmgOnAir = getConfig().getBoolean("dmg-on-air");
 
-	ArrayList<UUID> list = new ArrayList<UUID>(100);
+	public Map<UUID, Boolean> list = new HashMap<>();
 
 	@Override
 	public void onEnable() {
@@ -60,8 +61,9 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		event.getEntity().remove();
 		shooterUUID = shooter.getUniqueId();
 
-		if (!(list.contains(shooterUUID)))
-			list.add(shooterUUID);
+		if (!list.containsKey(shooterUUID) || !list.get(shooterUUID))
+			list.put(shooterUUID, true);
+
 	}
 
 	@EventHandler
@@ -71,10 +73,13 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 			return;
 		health = getConfig().getInt("half-hearts");
 		dmgOnAir = getConfig().getBoolean("dmg-on-air");
-		if (event.getCause() == DamageCause.FALL && list.contains(shooterUUID)) {
+		if (event.getCause() == DamageCause.FALL
+				&& list.containsKey(shooterUUID)) {
 			if (!dmgOnAir)
 				shooter.setHealth(shooter.getHealth() - health);
-			list.remove(shooterUUID);
+			if (list.get(shooterUUID))
+				list.put(shooterUUID, false);
+
 			event.setCancelled(true);
 		}
 	}
