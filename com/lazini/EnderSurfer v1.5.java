@@ -26,6 +26,7 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	boolean dmgOnAir = getConfig().getBoolean("dmg-on-air");
 
 	public Map<UUID, Boolean> list = new HashMap<>();
+	public Map<UUID, Boolean> threwE = new HashMap<>();
 
 	@Override
 	public void onEnable() {
@@ -46,8 +47,9 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 				|| !(event.getEntity() instanceof EnderPearl))
 			return;
 		shooter = (Player) event.getEntity().getShooter();
-		if (shooter.isSneaking() == true)
+		if (shooter.isSneaking())
 			return;
+
 		health = getConfig().getInt("half-hearts");
 		velMult = getConfig().getInt("vel-mult");
 		dmgOnAir = getConfig().getBoolean("dmg-on-air");
@@ -60,9 +62,13 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		shooter.setVelocity(velocity);
 		event.getEntity().remove();
 		shooterUUID = shooter.getUniqueId();
+		threwE.put(shooterUUID, false);
+		list.put(shooterUUID, false);
 
-		if (!list.containsKey(shooterUUID) || !list.get(shooterUUID))
+		if (dmgOnAir)
 			list.put(shooterUUID, true);
+		else
+			threwE.put(shooterUUID, true);
 
 	}
 
@@ -75,12 +81,14 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		dmgOnAir = getConfig().getBoolean("dmg-on-air");
 		if (event.getCause() == DamageCause.FALL
 				&& list.containsKey(shooterUUID)) {
-			if (!dmgOnAir)
-				shooter.setHealth(shooter.getHealth() - health);
-			if (list.get(shooterUUID))
+			if (list.get(shooterUUID)) {
 				list.put(shooterUUID, false);
-
-			event.setCancelled(true);
+				event.setCancelled(true);
+			} else if (threwE.get(shooterUUID)) {
+				shooter.setHealth(shooter.getHealth() - health);
+				threwE.put(shooterUUID, false);
+				event.setCancelled(true);
+			}
 		}
 	}
 
