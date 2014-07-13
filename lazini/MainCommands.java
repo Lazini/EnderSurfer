@@ -1,4 +1,4 @@
-package com.lazini;
+package lazini;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,8 +20,9 @@ public class MainCommands implements CommandExecutor {
 		if (command.getName().equalsIgnoreCase("sethearts")) {
 			if (args.length == 0) {
 				plugin.reloadConfig();
-				sender.sendMessage(ChatColor.GREEN
+				sender.sendMessage(ChatColor.GOLD
 						+ strHealth
+						+ ChatColor.GREEN
 						+ " half hearts will be lost when someone hits the ground!");
 				return true;
 			} else if (args.length > 1) {
@@ -35,7 +36,7 @@ public class MainCommands implements CommandExecutor {
 				strHealth = Integer.toString(health);
 				plugin.saveConfig();
 				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
+						+ "Configuration file updated!" + ChatColor.GOLD
 						+ " (half-hearts: " + strHealth + ")");
 				return true;
 			}
@@ -43,7 +44,8 @@ public class MainCommands implements CommandExecutor {
 			if (args.length == 0) {
 				plugin.reloadConfig();
 				sender.sendMessage(ChatColor.GREEN
-						+ "The current velocity multiplier is " + strVelMult);
+						+ "The current velocity multiplier is "
+						+ ChatColor.GOLD + strVelMult);
 				return true;
 			} else if (args.length > 1) {
 				sender.sendMessage(ChatColor.RED
@@ -56,7 +58,7 @@ public class MainCommands implements CommandExecutor {
 				strVelMult = Integer.toString(velMult);
 				plugin.saveConfig();
 				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
+						+ "Configuration file updated!" + ChatColor.GOLD
 						+ " (vel-mult: " + strVelMult + ")");
 				return true;
 			}
@@ -65,7 +67,7 @@ public class MainCommands implements CommandExecutor {
 				plugin.reloadConfig();
 				sender.sendMessage(ChatColor.GREEN
 						+ "Currently damaging the player while in the air is set to "
-						+ strDmgOnAir);
+						+ ChatColor.GOLD + strDmgOnAir);
 				return true;
 			} else if (args.length > 1) {
 				sender.sendMessage(ChatColor.RED
@@ -78,7 +80,7 @@ public class MainCommands implements CommandExecutor {
 				strDmgOnAir = Boolean.toString(dmgOnAir);
 				plugin.saveConfig();
 				sender.sendMessage(ChatColor.GREEN
-						+ " Configuration file updated!" + ChatColor.GOLD
+						+ "Configuration file updated!" + ChatColor.GOLD
 						+ " (dmg-on-air: " + strDmgOnAir + ")");
 				return true;
 			}
