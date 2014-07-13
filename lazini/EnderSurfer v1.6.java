@@ -1,9 +1,10 @@
-package com.lazini;
+package lazini;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,7 +45,9 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onThrowEnderPearl(ProjectileLaunchEvent event) {
 		if (!(event.getEntity().getShooter() instanceof Player)
-				|| !(event.getEntity() instanceof EnderPearl))
+				|| !(event.getEntity() instanceof EnderPearl)
+				|| !((Player) event.getEntity().getShooter())
+						.hasPermission("throw"))
 			return;
 		shooter = (Player) event.getEntity().getShooter();
 		if (shooter.isSneaking())
@@ -55,8 +58,14 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 		dmgOnAir = getConfig().getBoolean("dmg-on-air");
 		Vector velocity = event.getEntity().getVelocity();
 
-		if (!shooter.isOnGround() && dmgOnAir)
-			shooter.setHealth(shooter.getHealth() - health);
+		if (dmgOnAir)
+			shooter.damage(health);
+
+		if (shooter.isOnGround()) {
+			Location loc = shooter.getLocation();
+			loc.setY(loc.getY() + .1);
+			shooter.teleport(loc);
+		}
 
 		velocity = velocity.multiply(velMult);
 		shooter.setVelocity(velocity);
@@ -75,17 +84,23 @@ public class EnderSurfer extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onGetDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player)
-				|| event.getEntity() != shooter)
+				|| event.getEntity() != shooter
+				|| !((Player) event.getEntity())
+						.hasPermission("defy-fall-damage"))
 			return;
+		shooter = (Player) event.getEntity();
+		shooterUUID = shooter.getUniqueId();
 		health = getConfig().getInt("half-hearts");
 		dmgOnAir = getConfig().getBoolean("dmg-on-air");
+
 		if (event.getCause() == DamageCause.FALL
-				&& list.containsKey(shooterUUID)) {
+				&& (list.containsKey(shooterUUID) || threwE
+						.containsKey(shooterUUID))) {
 			if (list.get(shooterUUID)) {
 				list.put(shooterUUID, false);
 				event.setCancelled(true);
 			} else if (threwE.get(shooterUUID)) {
-				shooter.setHealth(shooter.getHealth() - health);
+				shooter.damage(health);
 				threwE.put(shooterUUID, false);
 				event.setCancelled(true);
 			}
