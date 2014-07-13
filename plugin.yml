@@ -1,6 +1,6 @@
 name: EnderSurfer
-main: com.lazini.EnderSurfer
-version: 1.5
+main: lazini.EnderSurfer
+version: 1.6
 author: Lazini
 commands:
     setHearts:
@@ -15,6 +15,13 @@ commands:
         permission-message: You don't have permission to do this!
     setDamageOnAir:
         usage: /setDamageOnAir <true;false>
-        description: Set to true if you want the player to lose health everytime they throw an enderpearl while in the air. Default is true.
+        description: Set to true if you want the player to be damaged everytime they throw an enderpearl while in the air. Default is false. It will set dmg-by-dst to false!
         permission: op
         permission-message: You don't have permission to do this!
+permissions:
+    throw:
+        description: Check if a player is able to utilize EnderSurfer.
+        default: true
+    defy-fall-damage:
+        description: Check if a player is able to defy fall damage after throwing an ender pearl.
+        default: true
