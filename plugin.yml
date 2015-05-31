@@ -1,27 +1,24 @@
 name: EnderSurfer
 main: lazini.EnderSurfer
-version: 1.6
+version: 1.9
 author: Lazini
 commands:
-    setHearts:
-        usage: /setHearts <half-hearts>
-        description: Sets how many half hearts should be lost when someone hits the ground after throwing an enderpearl. Default is 2.
+    endersurfer:
+        usage: Gives you access to all of the other EnderSurfer commands.
+        description: Gives you info about EnderSurfer
         permission: op
         permission-message: You don't have permission to do this!
-    setVelocityMultiplier:
-        usage: /setVelocityMultiplier <multiplier>
-        description: Set the velocity multiplier (enderpearl's velocity times the number you put here). Default is 3.
-        permission: op
-        permission-message: You don't have permission to do this!
-    setDamageOnAir:
-        usage: /setDamageOnAir <true;false>
-        description: Set to true if you want the player to be damaged everytime they throw an enderpearl while in the air. Default is false. It will set dmg-by-dst to false!
-        permission: op
-        permission-message: You don't have permission to do this!
+        aliases: [es]
 permissions:
-    throw:
+    endersurfer.utilize:
         description: Check if a player is able to utilize EnderSurfer.
         default: true
-    defy-fall-damage:
-        description: Check if a player is able to defy fall damage after throwing an ender pearl.
+    endersurfer.defyfalldamage:
+        description: Check if a player is able to defy the fall damage he gets after throwing an ender pearl.
+        default: false
+    endersurfer.showparticles:
+        description: Check if particles can be displayed at a player when they throw an ender pearl.
         default: true
+    endersurfer.defydamageonair:
+        description: Check if a player is able to defy the damage he gets while on air, after throwing an ender pearl.
+        default: false
