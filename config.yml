@@ -1,3 +1,6 @@
 half-hearts: 2
 vel-mult: 3
-dmg-on-air: true
+dmg-on-air: false
+show-particles: true
+disabled-for-worlds: 
+- WORLDNAME1_EXAMPLE
