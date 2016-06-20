@@ -20,7 +20,13 @@ public class Commands implements CommandExecutor, TabCompleter {
 	String strDmgOnAir = Boolean.toString(dmgOnAir);
 	boolean showParticles = plugin.getConfig().getBoolean("show-particles");
 	String strShowParticles = Boolean.toString(showParticles);
-
+	// Tab completion stuff
+	ArrayList<String> Arguments = new ArrayList<String>();
+	String[] completions = new String[] { "setHearts",
+			"setVelocityMultiplier", "setDamageOnAir",
+			"showParticles", "help"};
+	String[] completions2 = new String[] { "true", "false", };
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
@@ -42,8 +48,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 				sender.sendMessage(ChatColor.RED
 						+ "/setVelocityMultiplier"
 						+ ChatColor.GREEN
-						+ ": Set the velocity multiplier, in other words the number the velocity will be multiplied by "
-						+ ChatColor.ITALIC + "(maximum number is 10!)");
+						+ ": Set the velocity multiplier. In simple words, the bigger, the faster"
+						+ ChatColor.ITALIC + "(setting it to 8 is fine, avoid bigger numbers)");
 			}
 
 			else if (args.length == 1) {
@@ -72,12 +78,13 @@ public class Commands implements CommandExecutor, TabCompleter {
 							+ "Currently damaging the player while in the air is set to "
 							+ ChatColor.GOLD + strShowParticles);
 					return true;
-				} else if (args[0].equalsIgnoreCase("reloadConfig")) {
+				} 
+				/*else if (args[0].equalsIgnoreCase("reloadConfig")) {
 					plugin.reloadConfig();
 					sender.sendMessage(ChatColor.GREEN
 							+ "The configuration file has been reloaded successfully!");
 					return true;
-				}
+				} */
 			}
 
 			else if (args.length == 2) {
@@ -138,10 +145,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 		if (command.getName().equalsIgnoreCase("endersurfer")
 				|| label.equalsIgnoreCase("es")) {
 			if (args.length == 1) {
-				ArrayList<String> Arguments = new ArrayList<String>();
-				String[] completions = new String[] { "setHearts",
-						"setVelocityMultiplier", "setDamageOnAir",
-						"showParticles", "help", "reloadConfig" };
+				
 
 				if (!args[0].equals("")) {
 					for (String p : completions) {
@@ -158,15 +162,24 @@ public class Commands implements CommandExecutor, TabCompleter {
 				Collections.sort(Arguments);
 				return Arguments;
 			}
-			if (args.length == 2) {
+			
+			else if (args.length == 2) {
 
+				/*String[] previousCommands = new String[] {
+						"setVelocityMultiplier", "setDamageOnAir",
+						"showParticles" };
+				for (String str : previousCommands) {
+					if (!str.equalsIgnoreCase(str)) {
+						sender.sendMessage("Returning null");
+						return null;
+					}
+				}*/
 
 				if (args[0].equalsIgnoreCase("setDamageOnAir")
 						|| args[0].equalsIgnoreCase("showParticles")) {
-					ArrayList<String> Arguments = new ArrayList<String>();
-					String[] completions = new String[] { "true", "false", };
+					
 					if (!args[1].equals("")) {
-						for (String p : completions) {
+						for (String p : completions2) {
 							if (p.toString().toLowerCase()
 									.startsWith(args[0].toLowerCase())) {
 								Arguments.add(p.toString());
@@ -181,6 +194,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					return Arguments;
 				}
 			}
+			Arguments.clear();
 		}
 		return null;
 	}
