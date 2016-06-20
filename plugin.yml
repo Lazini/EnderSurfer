@@ -1,6 +1,6 @@
 name: EnderSurfer
 main: lazini.EnderSurfer
-version: 1.9
+version: 1.10
 author: Lazini
 commands:
     endersurfer:
@@ -21,4 +21,7 @@ permissions:
         default: true
     endersurfer.defydamageonair:
         description: Check if a player is able to defy the damage he gets while on air, after throwing an ender pearl.
+        default: false
+    endersurfer.elytra:
+        description: Check if a player can use Ender Surfer while flying with an ender pearl. Important note! Having this off will set ender pearl usage to default, not completely cancel the event!!
         default: false
