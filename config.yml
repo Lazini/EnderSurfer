@@ -1,5 +1,5 @@
 half-hearts: 2
-vel-mult: 3
+vel-mult: 7
 dmg-on-air: false
 show-particles: true
 disabled-for-worlds: 
